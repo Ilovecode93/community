@@ -16,12 +16,10 @@
 
 ## 2、功能目标
 
-增加 API `paddle.nn.functional.multi_margin_loss`，用于多分类问题的 Hinge loss。计算方式如下：
-**p-norm(x - y + epsilon, p, last_dim, keepdim)**
-p-norm 计算函数如下：
+增加 API `paddle.nn.functional.multi_margin_loss`，用于多分类问题的 Hinge loss。计算函数如下：
 
 > $$
-> \text { loss }_{i}=\left\{\begin{array}{ll}
+> \text {loss}_{i}=\left\{\begin{array}{ll}
 > \max \left(0, \text { margin }+\text { input }_{\text {target }}-\text { input }_{i}\right) & i \neq \text { target } \\
 > 0 & i=\text { target }
 > \end{array}\right.
