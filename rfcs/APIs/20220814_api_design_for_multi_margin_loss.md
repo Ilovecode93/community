@@ -16,24 +16,28 @@
 
 ## 2、功能目标
 
-增加 API `paddle.nn.functional.multi_margin_loss`，用于多分类问题的 Hinge loss。计算函数如下：
+增加 API `paddle.nn.functional.multi_margin_loss`，用于多分类问题的 Hinge loss。给定一个 2D 的 Tensor input，形状为 (N, C), N 是 batch_size, C 是类别数，这可以视为对每个类别的评分。再给定一个 1D 的 int Tensor, target，形状为 (N,), 表示真实的类别标签（target 中每一个值都满足 0 <= target[i] < C）。
+对于一个样本来说（这里不考虑 batch, 所以 input 是一个形状为 (C,) 的向量），target 就是一个整数。给定一个浮点数 margin,  
+x 中每一个类别的评分对应的 loss 为：
 
 > $$
-> \text {loss}_{i}=\left\{\begin{array}{ll}
-
+> \text { loss }_{i}=\left\{\begin{array}{ll}
+> \max \left(0, \text { margin }+\text { input }_{\text {target }}-\text { input }_{i}\right) & i \neq \text { target } \\
+> 0 & i=\text { target }
+> \end{array}\right.
 > $$
 
-- 对不同 shape 的输入，当 x 和 y 分别取 (N, D) 和 (D, )、(N, D) 和 (N, D)、(D, ) 和 (N, D) 以及 (D, ) 和 (D, ) 这四种情况，都能正确的广播并计算相应的范数；
-- 对于不同的 p 值，可以求解不同类型的 p 范数；
+- 对于一个样本来说（这里不考虑 batch, 所以 input 是一个形状为 (C,) 的向量），target 就是一个整数。给定一个浮点数 margin,  x 中每一个类别的评分对应的 loss 为；
+- 给定一个 2D 的 Tensor input,  形状为 (N, C), N 是 batch_size, C 是类别数，这可以视为对每个类别的评分。再给定一个 1D 的 int Tensor, target，形状为 (N,), 表示真实的类别标签（target 中每一个值都满足 0 <= target[i] < C）
 - 参数 `keepdim` 可以控制输出的维度是否与输入保持一致。
 
 ## 3、意义
 
-为 Paddle 增加神经网络相关的距离计算函数，丰富 `paddle.nn` 中的 API。
+为 Paddle 增加神经网络相关的损失计算函数，丰富 `paddle.nn` 中的 API。
 
 # 二、飞桨现状
 
-- 目前 Paddle 缺少 functional API `paddle.nn.functional.pairwise_distance`，但是存在 class API `paddle.nn.PairwiseDistance(p=2., epsilon=1e-6, keepdim=False, name=None)`，参考 Paddle 其他的 `layer` 和 `functional` 下的文件是一一对应的关系，因此在需要在 `functional` 目录下添加该 API。
+- 目前 Paddle 缺少 functional API `paddle.nn.functional.multi_margin_loss`，但是存在 class API `paddle.nn.PairwiseDistance(p=2., epsilon=1e-6, keepdim=False, name=None)`，参考 Paddle 其他的 `layer` 和 `functional` 下的文件是一一对应的关系，因此在需要在 `functional` 目录下添加该 API。
 - 该 API 的实现及测试，主要参考目前 Paddle 中含有的 `paddle.linalg.norm` 和 `paddle.dist` API，下面是对这两个 API 的补充说明。
 
 ## [paddle.linalg.norm(x, p='fro', axis=None, keepdim=False, name=None)](https://www.paddlepaddle.org.cn/documentation/docs/zh/api/paddle/linalg/norm_cn.html#norm)
@@ -385,17 +389,3 @@ class API 中的具体实现：
 # 附件及参考资料
 
 ## PyTorch
-
-[torch.nn.functional.pairwise_distance](https://pytorch.org/docs/stable/generated/torch.nn.functional.pairwise_distance.html?highlight=pairwise#torch.nn.functional.pairwise_distance)
-
-[torch.nn.PairwiseDistance](https://pytorch.org/docs/stable/generated/torch.nn.PairwiseDistance.html#torch.nn.PairwiseDistance)
-
-## TensorFlow
-
-[nsl.lib.pairwise_distance_wrapper](https://www.tensorflow.org/neural_structured_learning/api_docs/python/nsl/lib/pairwise_distance_wrapper)
-
-## Paddle
-
-[paddle.linalg.norm](https://www.paddlepaddle.org.cn/documentation/docs/zh/api/paddle/linalg/norm_cn.html#norm)
-
-[paddle.dist](https://www.paddlepaddle.org.cn/documentation/docs/zh/api/paddle/dist_cn.html#dist)
