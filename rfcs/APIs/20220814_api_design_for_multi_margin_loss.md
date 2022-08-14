@@ -16,12 +16,15 @@
 
 ## 2、功能目标
 
-增加 API `paddle.nn.functional.multi_margin_loss`，用于计算两组向量两两之间的距离。计算方式如下：
+增加 API `paddle.nn.functional.multi_margin_loss`，用于多分类问题的 Hinge loss。计算方式如下：
 **p-norm(x - y + epsilon, p, last_dim, keepdim)**
 p-norm 计算函数如下：
 
 > $$
-> \Vert x \Vert _p = \left( \sum_{i=1}^n  \vert x_i \vert ^ p \right) ^ {1/p} p \geq 1, x \in R ^ n
+> \text { loss }_{i}=\left\{\begin{array}{ll}
+\max \left(0, \text { margin }+\text { input }_{\text {target }}-\text { input }_{i}\right) & i \neq \text { target } \\
+0 & i=\text { target }
+\end{array}\right
 > $$
 
 - 对不同 shape 的输入，当 x 和 y 分别取 (N, D) 和 (D, )、(N, D) 和 (N, D)、(D, ) 和 (N, D) 以及 (D, ) 和 (D, ) 这四种情况，都能正确的广播并计算相应的范数；
