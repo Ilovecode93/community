@@ -24,7 +24,7 @@ p-norm 计算函数如下：
 > \text { loss }_{i}=\left\{\begin{array}{ll}
 > \max \left(0, \text { margin }+\text { input }_{\text {target }}-\text { input }_{i}\right) & i \neq \text { target } \\
 > 0 & i=\text { target }
-> \end{array}\right
+> \end{array}\right.
 > $$
 
 - 对不同 shape 的输入，当 x 和 y 分别取 (N, D) 和 (D, )、(N, D) 和 (N, D)、(D, ) 和 (N, D) 以及 (D, ) 和 (D, ) 这四种情况，都能正确的广播并计算相应的范数；
